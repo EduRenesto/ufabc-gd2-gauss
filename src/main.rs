@@ -18,6 +18,12 @@ fn main() {
     let _gl_ctx = win.gl_create_context().unwrap();
     let gl = unsafe { glow::Context::from_loader_function(|s| video.gl_get_proc_address(s) as *const _) };
 
+    let shader = crate::gfx::Shader::new(
+        &gl,
+        include_str!("../res/shaders/simple.frag.glsl"),
+        include_str!("../res/shaders/simple.vert.glsl"),
+    ).unwrap();
+
     let mut evt_loop = sdl.event_pump().unwrap();
 
     'main: loop {
@@ -31,6 +37,8 @@ fn main() {
         unsafe {
             gl.clear_color(0.2f32, 0.0, 0.2f32, 1.0f32);
             gl.clear(glow::COLOR_BUFFER_BIT);
+
+            shader.bind(&gl);
         }
 
         win.gl_swap_window();
