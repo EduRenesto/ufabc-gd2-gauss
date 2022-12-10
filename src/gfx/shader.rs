@@ -72,4 +72,24 @@ impl Shader {
     pub fn bind(&self, gl: &Context) {
         unsafe { gl.use_program(Some(self.program)) };
     }
+
+    pub fn uniform<T: Uniform>(&self, gl: &Context, name: &str, val: &T) {
+        unsafe {
+            let loc = gl
+                .get_uniform_location(self.program, name)
+                .expect(&format!("Uniform {} not found", name));
+
+            val.bind(gl, &loc);
+        }
+    }
+}
+
+pub trait Uniform {
+    unsafe fn bind(&self, gl: &glow::Context, loc: &glow::UniformLocation);
+}
+
+impl Uniform for ultraviolet::Mat4 {
+    unsafe fn bind(&self, gl: &glow::Context, loc: &glow::UniformLocation) {
+        gl.uniform_matrix_4_f32_slice(Some(loc), false, self.as_slice());
+    }
 }

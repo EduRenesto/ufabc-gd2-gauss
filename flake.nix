@@ -56,6 +56,7 @@
         devShells.default = rustPkgs.workspaceShell {
           packages = with pkgs; [
             rust-analyzer
+            glslang
 
             xorg.libX11
             xorg.libXcursor
