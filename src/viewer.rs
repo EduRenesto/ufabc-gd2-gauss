@@ -32,7 +32,8 @@ impl<'a> Viewer<'a> {
             let model = &models[0];
             let mesh = &model.mesh;
 
-            crate::geom::compute_curvatures(mesh);
+            //let nbhds = crate::geom::compute_neighborhoods(mesh);
+            let raw_avg_normals = crate::geom::compute_avg_normals(mesh);
 
             let raw_positions = &mesh.positions;
             let raw_normals = &mesh.normals;
@@ -87,7 +88,21 @@ impl<'a> Viewer<'a> {
                 .flatten()
                 .collect::<Vec<_>>();
 
-            VertexBuffer::from_mesh(gl, vertices, Some(normals), None)
+            let avg_normals = mesh
+                .indices
+                .chunks_exact(3)
+                .map(|idxs| {
+                    let n1 = raw_avg_normals[idxs[0] as usize];
+                    let n2 = raw_avg_normals[idxs[1] as usize];
+                    let n3 = raw_avg_normals[idxs[2] as usize];
+
+                    [n1, n2, n3]
+                })
+                .flatten()
+                .collect::<Vec<_>>();
+
+            //VertexBuffer::from_mesh(gl, vertices, Some(normals), None)
+            VertexBuffer::from_mesh(gl, vertices, Some(avg_normals), None)
         };
 
         let cam_matrix = {
