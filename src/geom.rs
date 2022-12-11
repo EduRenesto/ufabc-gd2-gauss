@@ -2,7 +2,7 @@
 
 use std::collections::{HashMap, HashSet};
 
-use ultraviolet::Vec3;
+use ultraviolet::{Mat3, Vec3};
 
 pub fn compute_neighborhoods(mesh: &tobj::Mesh) -> Vec<HashSet<u32>> {
     // NOTE(edu): a ideia aqui é encontrar a vizinhança de cada
@@ -89,4 +89,8 @@ pub fn compute_avg_normals(mesh: &tobj::Mesh) -> Vec<Vec3> {
     }
 
     ret
+}
+
+pub fn compute_tangent_basis(mesh: &tobj::Mesh) -> Vec<Mat3> {
+    todo!()
 }
