@@ -34,25 +34,60 @@ impl<'a> Viewer<'a> {
 
             crate::geom::compute_curvatures(mesh);
 
-            let indices = mesh
-                .indices
-                .iter()
-                .map(|i| *i as u16)
-                .collect::<Vec<_>>();
+            let raw_positions = &mesh.positions;
+            let raw_normals = &mesh.normals;
 
             let vertices = mesh
-                .positions
+                .indices
                 .chunks_exact(3)
-                .map(|chunk| ultraviolet::Vec3::new(chunk[0], chunk[1], chunk[2]))
+                .map(|idxs| {
+                    let v1 = Vec3::new(
+                        raw_positions[3 * idxs[0] as usize + 0],
+                        raw_positions[3 * idxs[0] as usize + 1],
+                        raw_positions[3 * idxs[0] as usize + 2],
+                    );
+                    let v2 = Vec3::new(
+                        raw_positions[3 * idxs[1] as usize + 0],
+                        raw_positions[3 * idxs[1] as usize + 1],
+                        raw_positions[3 * idxs[1] as usize + 2],
+                    );
+                    let v3 = Vec3::new(
+                        raw_positions[3 * idxs[2] as usize + 0],
+                        raw_positions[3 * idxs[2] as usize + 1],
+                        raw_positions[3 * idxs[2] as usize + 2],
+                    );
+
+                    [v1, v2, v3]
+                })
+                .flatten()
                 .collect::<Vec<_>>();
 
             let normals = mesh
-                .normals
+                .normal_indices
                 .chunks_exact(3)
-                .map(|chunk| ultraviolet::Vec3::new(chunk[0], chunk[1], chunk[2]))
+                .map(|idxs| {
+                    let v1 = Vec3::new(
+                        raw_normals[3 * idxs[0] as usize + 0],
+                        raw_normals[3 * idxs[0] as usize + 1],
+                        raw_normals[3 * idxs[0] as usize + 2],
+                    );
+                    let v2 = Vec3::new(
+                        raw_normals[3 * idxs[1] as usize + 0],
+                        raw_normals[3 * idxs[1] as usize + 1],
+                        raw_normals[3 * idxs[1] as usize + 2],
+                    );
+                    let v3 = Vec3::new(
+                        raw_normals[3 * idxs[2] as usize + 0],
+                        raw_normals[3 * idxs[2] as usize + 1],
+                        raw_normals[3 * idxs[2] as usize + 2],
+                    );
+
+                    [v1, v2, v3]
+                })
+                .flatten()
                 .collect::<Vec<_>>();
 
-            VertexBuffer::from_mesh(gl, indices, vertices, Some(normals), None)
+            VertexBuffer::from_mesh(gl, vertices, Some(normals), None)
         };
 
         let cam_matrix = {
