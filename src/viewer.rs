@@ -32,8 +32,13 @@ impl<'a> Viewer<'a> {
             let model = &models[0];
             let mesh = &model.mesh;
 
-            //let nbhds = crate::geom::compute_neighborhoods(mesh);
+            let nbhds = crate::geom::compute_neighborhoods(mesh);
             let raw_avg_normals = crate::geom::compute_avg_normals(mesh);
+            let tangent_basii = crate::geom::compute_tangent_basis(mesh, &nbhds, &raw_avg_normals);
+            let shape_ops = crate::geom::compute_shape_operator(mesh, &nbhds, &raw_avg_normals, &tangent_basii);
+            let curvatures = crate::geom::compute_curvatures(&shape_ops);
+
+            println!("curvatures = {:?}", curvatures);
 
             let raw_positions = &mesh.positions;
             let raw_normals = &mesh.normals;
