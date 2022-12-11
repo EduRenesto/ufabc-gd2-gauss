@@ -27,52 +27,52 @@ impl VertexBuffer {
                 let data = slice::from_raw_parts(indices.as_ptr() as *const u8, indices.len() * std::mem::size_of::<u16>());
 
                 gl.buffer_data_u8_slice(glow::ELEMENT_ARRAY_BUFFER, data, glow::STATIC_DRAW);
+                gl.memory_barrier(glow::ALL_BARRIER_BITS);
             }
 
             {
                 let vbo = gl.create_buffer().unwrap();
-                gl.bind_buffer(glow::VERTEX_ARRAY, Some(vbo));
+                gl.bind_buffer(glow::ARRAY_BUFFER, Some(vbo));
 
                 // HACK
                 let data  = slice::from_raw_parts(vertices.as_ptr() as *const u8, vertices.len() * std::mem::size_of::<Vec3>());
 
-                gl.buffer_data_u8_slice(glow::VERTEX_ARRAY, data, glow::STATIC_DRAW);
+                gl.buffer_data_u8_slice(glow::ARRAY_BUFFER, data, glow::STATIC_DRAW);
 
                 gl.enable_vertex_attrib_array(0);
                 gl.vertex_attrib_pointer_f32(0, 3, glow::FLOAT, false, 0, 0);
 
-                // HACK forgive me, father, for I have sinned.
-                std::mem::forget(vbo);
+                gl.memory_barrier(glow::ALL_BARRIER_BITS);
             }
 
             if let Some(normals) = normals {
                 let vbo = gl.create_buffer().unwrap();
-                gl.bind_buffer(glow::VERTEX_ARRAY, Some(vbo));
+                gl.bind_buffer(glow::ARRAY_BUFFER, Some(vbo));
 
                 // HACK
                 let data  = slice::from_raw_parts(normals.as_ptr() as *const u8, normals.len() * std::mem::size_of::<Vec3>());
 
-                gl.buffer_data_u8_slice(glow::VERTEX_ARRAY, data, glow::STATIC_DRAW);
+                gl.buffer_data_u8_slice(glow::ARRAY_BUFFER, data, glow::STATIC_DRAW);
 
                 gl.enable_vertex_attrib_array(1);
                 gl.vertex_attrib_pointer_f32(1, 3, glow::FLOAT, false, 0, 0);
 
-                std::mem::forget(vbo);
+                gl.memory_barrier(glow::ALL_BARRIER_BITS);
             };
 
             if let Some(tex_coords) = tex_coords {
                 let vbo = gl.create_buffer().unwrap();
-                gl.bind_buffer(glow::VERTEX_ARRAY, Some(vbo));
+                gl.bind_buffer(glow::ARRAY_BUFFER, Some(vbo));
 
                 // HACK
                 let data  = slice::from_raw_parts(tex_coords.as_ptr() as *const u8, tex_coords.len() * std::mem::size_of::<Vec3>());
 
-                gl.buffer_data_u8_slice(glow::VERTEX_ARRAY, data, glow::STATIC_DRAW);
+                gl.buffer_data_u8_slice(glow::ARRAY_BUFFER, data, glow::STATIC_DRAW);
 
                 gl.enable_vertex_attrib_array(2);
                 gl.vertex_attrib_pointer_f32(2, 2, glow::FLOAT, false, 0, 0);
 
-                std::mem::forget(vbo);
+                gl.memory_barrier(glow::ALL_BARRIER_BITS);
             };
 
             VertexBuffer { ibo, vao, n_vertices: indices.len() }
@@ -82,6 +82,7 @@ impl VertexBuffer {
     pub fn draw(&self, gl: &Context) {
         unsafe {
             gl.bind_vertex_array(Some(self.vao));
+
             gl.bind_buffer(glow::ELEMENT_ARRAY_BUFFER, Some(self.ibo));
 
             gl.draw_elements(glow::TRIANGLES, self.n_vertices as i32, glow::UNSIGNED_SHORT, 0);
