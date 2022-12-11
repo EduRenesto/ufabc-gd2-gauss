@@ -20,23 +20,37 @@ impl<'a> Viewer<'a> {
             include_str!("../res/shaders/simple.vert.glsl"),
         ).expect("failed to load shader");
 
-        let file = BufReader::new(File::open("res/models/torus.obj").unwrap());
-        let model: obj::Obj = obj::load_obj(file).expect("failed to load model");
+        let mut load_opts = tobj::GPU_LOAD_OPTIONS;
+        load_opts.single_index = false;
+
+        let (models, _) = tobj::load_obj(
+            "res/models/torus.obj",
+            &load_opts,
+        ).expect("failed to load model");
 
         let vao = {
-            let indices = model.indices;
+            let model = &models[0];
+            let mesh = &model.mesh;
 
-            let vertices = model.vertices.iter().map(|vtx| {
-                let [x,y,z] = vtx.position;
+            crate::geom::compute_curvatures(mesh);
 
-                ultraviolet::Vec3::new(x,y,z)
-            }).collect::<Vec<_>>();
+            let indices = mesh
+                .indices
+                .iter()
+                .map(|i| *i as u16)
+                .collect::<Vec<_>>();
 
-            let normals = model.vertices.iter().map(|vtx| {
-                let [x,y,z] = vtx.normal;
+            let vertices = mesh
+                .positions
+                .chunks_exact(3)
+                .map(|chunk| ultraviolet::Vec3::new(chunk[0], chunk[1], chunk[2]))
+                .collect::<Vec<_>>();
 
-                ultraviolet::Vec3::new(x,y,z)
-            }).collect::<Vec<_>>();
+            let normals = mesh
+                .normals
+                .chunks_exact(3)
+                .map(|chunk| ultraviolet::Vec3::new(chunk[0], chunk[1], chunk[2]))
+                .collect::<Vec<_>>();
 
             VertexBuffer::from_mesh(gl, indices, vertices, Some(normals), None)
         };

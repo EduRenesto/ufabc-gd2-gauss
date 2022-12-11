@@ -3,6 +3,7 @@ use viewer::Viewer;
 
 mod gfx;
 mod viewer;
+mod geom;
 
 fn main() {
     let sdl = sdl2::init().unwrap();
