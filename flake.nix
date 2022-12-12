@@ -67,6 +67,8 @@
             fontconfig
 
             SDL2
+
+            gdb
           ];
           LD_LIBRARY_PATH = "${pkgs.xorg.libX11.out}/lib:${pkgs.xorg.libXcursor.out}/lib:${pkgs.xorg.libXrandr.out}/lib:${pkgs.xorg.libXi.out}/lib";
         };

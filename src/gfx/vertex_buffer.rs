@@ -13,7 +13,7 @@ impl VertexBuffer {
         gl: &Context,
         vertices: Vec<Vec3>,
         normals: Option<Vec<Vec3>>,
-        tex_coords: Option<Vec<Vec2>>,
+        gaussian_curvatures: Option<Vec<f32>>,
     ) -> VertexBuffer {
         unsafe {
             let vao = gl.create_vertex_array().unwrap();
@@ -49,17 +49,17 @@ impl VertexBuffer {
                 gl.memory_barrier(glow::ALL_BARRIER_BITS);
             };
 
-            if let Some(tex_coords) = tex_coords {
+            if let Some(gaussian_curvatures) = gaussian_curvatures {
                 let vbo = gl.create_buffer().unwrap();
                 gl.bind_buffer(glow::ARRAY_BUFFER, Some(vbo));
 
                 // HACK
-                let data  = slice::from_raw_parts(tex_coords.as_ptr() as *const u8, tex_coords.len() * std::mem::size_of::<Vec3>());
+                let data  = slice::from_raw_parts(gaussian_curvatures.as_ptr() as *const u8, gaussian_curvatures.len() * std::mem::size_of::<f32>());
 
                 gl.buffer_data_u8_slice(glow::ARRAY_BUFFER, data, glow::STATIC_DRAW);
 
                 gl.enable_vertex_attrib_array(2);
-                gl.vertex_attrib_pointer_f32(2, 2, glow::FLOAT, false, 0, 0);
+                gl.vertex_attrib_pointer_f32(2, 1, glow::FLOAT, false, 0, 0);
 
                 gl.memory_barrier(glow::ALL_BARRIER_BITS);
             };

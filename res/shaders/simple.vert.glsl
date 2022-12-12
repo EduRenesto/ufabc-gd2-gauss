@@ -7,9 +7,11 @@
 
 layout(location = 0) in vec3 in_position;
 layout(location = 1) in vec3 in_normal;
+layout(location = 2) in float in_curvature;
 
 out vec3 out_position;
 out vec3 out_normal;
+out float out_curvature;
 
 uniform mat4 _camera_mtx;
 
@@ -18,4 +20,6 @@ void main() {
 
     out_position = gl_Position.xyz;
     out_normal = in_normal;
+
+    out_curvature = (clamp(in_curvature, -5, 5) / 5 + 1)/2;
 }

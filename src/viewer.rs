@@ -36,9 +36,7 @@ impl<'a> Viewer<'a> {
             let raw_avg_normals = crate::geom::compute_avg_normals(mesh);
             let tangent_basii = crate::geom::compute_tangent_basis(mesh, &nbhds, &raw_avg_normals);
             let shape_ops = crate::geom::compute_shape_operator(mesh, &nbhds, &raw_avg_normals, &tangent_basii);
-            let curvatures = crate::geom::compute_curvatures(&shape_ops);
-
-            println!("curvatures = {:?}", curvatures);
+            let raw_curvatures = crate::geom::compute_curvatures(&shape_ops);
 
             let raw_positions = &mesh.positions;
             let raw_normals = &mesh.normals;
@@ -106,8 +104,23 @@ impl<'a> Viewer<'a> {
                 .flatten()
                 .collect::<Vec<_>>();
 
+            let curvatures = mesh
+                .indices
+                .chunks_exact(3)
+                .map(|idxs| {
+                    let k1 = raw_curvatures[idxs[0] as usize].0;
+                    let k2 = raw_curvatures[idxs[1] as usize].0;
+                    let k3 = raw_curvatures[idxs[2] as usize].0;
+
+                    [k1, k2, k3]
+                })
+                .flatten()
+                .collect::<Vec<_>>();
+
+            println!("raw_curvatures.len = {}, raw_vertices.len = {}", raw_curvatures.len(), raw_positions.len());
+
             //VertexBuffer::from_mesh(gl, vertices, Some(normals), None)
-            VertexBuffer::from_mesh(gl, vertices, Some(avg_normals), None)
+            VertexBuffer::from_mesh(gl, vertices, Some(avg_normals), Some(curvatures))
         };
 
         let cam_matrix = {
