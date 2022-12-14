@@ -1,0 +1,27 @@
+name: Build release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Instala MinGW
+        run: |
+          sudo apt install mingw-w64
+
+      - name: Atualiza toolchain
+        run: |
+          rustup update
+          rustup install nightly
+          rustup target add x86_64-pc-windows-gnu
+
+      - name: Compila release Windows
+        run: |
+          cd gauss
+          cargo build --release --target x64_64-pc-windows-gnu
