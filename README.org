@@ -1,0 +1,34 @@
+#+TITLE: gauss
+
+gauss: calculando geometria intrínseca de objetos 3D
+
+[[https://edurenesto.github.io/ufabc-gd2-gauss/gauss/geom/index.html][Live docs]]
+
+* Compilando
+
+Será necessário um toolchain Rust funcionando.
+
+A maneira mais fácil de conseguir é por [[https://rustup.rs]].
+
+Conseguindo Rust, clone o repo, e num terminal:
+
+#+BEGIN_SRC lang=sh
+$ cargo run
+#+END_SRC
+
+* Tweaks
+
+Devido a tempo, o projeto não é muito configurável de maneira fácil. Para trocar
+de modelo, mude o arquivo =src/viewer.rs=, na linha 57. Lá, troque =suzanne.obj=
+para algum dos outros modelos disponíveis na pasta =res/models=.
+
+* Prebuilts
+
+Fiz uma gambiarra, e o CI compila o projeto e gera artefatos pra Windows e Linux
+amd64.
+
+Para baixá-los, vá no repositório, entre na aba =Actions=, procure pela pipeline
+=Build release= e escolha a iteração mais nova (a que vai estar no topo). Os
+releases serão os arquivos =.zip= na seção =Artifacts=.
+
+Você pode encontrar as execuções de tal pipeline [[https://github.com/EduRenesto/ufabc-gd2-gauss/actions/workflows/ci.yaml][por aqui]].
