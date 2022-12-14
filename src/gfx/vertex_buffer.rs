@@ -10,7 +10,7 @@
 use core::slice;
 
 use glow::{Context, HasContext};
-use ultraviolet::{ Vec3, Vec2 };
+use ultraviolet::Vec3;
 
 pub struct VertexBuffer {
     vao: glow::VertexArray,
