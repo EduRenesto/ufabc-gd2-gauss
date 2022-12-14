@@ -1,7 +1,8 @@
 [package]
 edition = "2021"
 name = "gauss"
-version = "0.1.0"
+version = "0.1.1"
+
 [dependencies]
 glow = "0.11"
 obj-rs = "0.7.0"
