@@ -10,7 +10,7 @@
 //! a partir do arquivo `.obj`, chama as funções de cálculo do módulo
 //! [`crate::geom`], e faz a renderização.
 
-use std::{io::BufReader, fs::File, f32::consts::PI};
+use std::f32::consts::PI;
 
 use ultraviolet::Vec3;
 
@@ -99,7 +99,7 @@ impl<'a> Viewer<'a> {
                 .collect::<Vec<_>>();
 
             // Prepara as normais de um modo que a placa de vídeo espera.
-            let normals = mesh
+            let _normals = mesh
                 .normal_indices
                 .chunks_exact(3)
                 .map(|idxs| {
@@ -152,9 +152,6 @@ impl<'a> Viewer<'a> {
                 .flatten()
                 .collect::<Vec<_>>();
 
-            println!("raw_curvatures.len = {}, raw_vertices.len = {}", raw_curvatures.len(), raw_positions.len());
-
-            //VertexBuffer::from_mesh(gl, vertices, Some(normals), None)
             // Constrói o buffer e copia os dados para a placa de vídeo.
             VertexBuffer::from_mesh(gl, vertices, Some(avg_normals), Some(curvatures))
         };
