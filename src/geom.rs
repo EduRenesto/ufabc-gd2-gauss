@@ -289,6 +289,7 @@ pub fn compute_tangent_basis(
 ///
 /// Tendo $X$, a parametrização do parabolóide fica completamente determinada,
 /// e podemos fazer contas e chegar na matriz do shape operator, o que é o desejado.
+#[allow(non_snake_case)]
 pub fn compute_shape_operator(
     mesh: &tobj::Mesh,
     nbhds: &Vec<BTreeSet<u32>>,
