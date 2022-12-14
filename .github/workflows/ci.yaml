@@ -25,6 +25,10 @@ jobs:
           mkdir -p target/x86_64-pc-windows-gnu/release/deps
           cp -r /tmp/sdl2/src/SDL2-2.26.1/x86_64-w64-mingw32/lib/* target/x86_64-pc-windows-gnu/release/deps/
 
+      - name: Instala SDL2 Linux
+        run: |
+          sudo apt install libsdl2-dev
+
       - name: Atualiza toolchain
         run: |
           rustup update
