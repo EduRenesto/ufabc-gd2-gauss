@@ -235,40 +235,8 @@ pub fn compute_tangent_basis(
         // Seja `nbhds` o conjunto de vértices adjacentes a p.
         let nbhds = nbhds.get(i).unwrap();
 
-        if nbhds.len() == 0 {
-            // TODO(edu): remove
-            println!("vertice id {} tem 0 nbhds!", i);
-            continue;
-        }
-
-        // Faz o lookup do valor do ponto p
-        let v = Vec3::new(
-            mesh.positions[3*i as usize + 0],
-            mesh.positions[3*i as usize + 1],
-            mesh.positions[3*i as usize + 2],
-        );
-
         // Seja `n` o vetor normal associado ao vértice p.
         let n = normals[i];
-
-        //let a_tilde = nbhds
-        //    .iter()
-        //    .find_map(|idx| {
-        //        let a_tilde = Vec3::new(
-        //            mesh.positions[3*(*idx) as usize + 0],
-        //            mesh.positions[3*(*idx) as usize + 1],
-        //            mesh.positions[3*(*idx) as usize + 2],
-        //        );
-
-        //        let cross = v.cross(a_tilde);
-
-        //        if cross.mag().abs() < 0.001 {
-        //            None
-        //        } else {
-        //            Some(a_tilde)
-        //        }
-        //    })
-        //    .expect("vertice nao tem vizinhos nao-paralelos");
 
         // Escolhe um outro vertice arbitrario na vizinhanca do vertice atual
         let a_tilde_idx = *nbhds.iter().next().unwrap() as usize;
@@ -324,7 +292,6 @@ pub fn compute_tangent_basis(
 pub fn compute_shape_operator(
     mesh: &tobj::Mesh,
     nbhds: &Vec<BTreeSet<u32>>,
-    normals: &Vec<Vec3>,
     tangent_bases: &Vec<Mat3>,
 ) -> Vec<Mat2> {
     let mut ret = vec![Mat2::identity(); mesh.positions.len()/3];
@@ -371,7 +338,6 @@ pub fn compute_shape_operator(
         let nb2_local = tps_basis_t * (nb2_vtx - v);
         let nb3_local = tps_basis_t * (nb3_vtx - v);
 
-        //let n = normals[i];
         // Extrai o vetor tangente da matriz base do TvS.
         let n = tps_basis.cols[2];
 
@@ -394,8 +360,6 @@ pub fn compute_shape_operator(
         // Por fim, calcula a matriz dos coeficientes que determinam
         // completamente a parametrização.
         let X = (((U.transposed() * U).inversed()) * U.transposed()) * F;
-        //assert!(U.determinant().abs() > 0.00001);
-        //let X = U.inversed() * F;
 
         // Monta a matriz do shape operator. Ela é da forma
         //
