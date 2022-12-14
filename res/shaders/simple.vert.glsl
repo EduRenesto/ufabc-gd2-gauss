@@ -14,9 +14,11 @@ out vec3 out_normal;
 out float out_curvature;
 
 uniform mat4 _camera_mtx;
+uniform mat4 _model_mtx;
 
 void main() {
-    gl_Position = _camera_mtx * vec4(in_position, 1.0);
+    mat4 mvp = _camera_mtx * _model_mtx;
+    gl_Position = mvp * vec4(in_position, 1.0);
 
     out_position = gl_Position.xyz;
     out_normal = in_normal;

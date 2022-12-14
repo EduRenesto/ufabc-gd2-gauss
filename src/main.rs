@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 use glow::HasContext;
 use viewer::Viewer;
 
@@ -31,7 +33,9 @@ fn main() {
     //    include_str!("../res/shaders/simple.vert.glsl"),
     //).unwrap();
 
-    let viewer = Viewer::new(&gl);
+    let mut viewer = Viewer::new(&gl);
+
+    let mut last_frame = Instant::now();
 
     let mut evt_loop = sdl.event_pump().unwrap();
 
@@ -43,6 +47,12 @@ fn main() {
             }
         }
 
+        let now = Instant::now();
+
+        let delta = now - last_frame;
+
+        viewer.update(delta);
+
         unsafe {
             gl.clear(glow::COLOR_BUFFER_BIT | glow::DEPTH_BUFFER_BIT);
 
@@ -50,5 +60,7 @@ fn main() {
         }
 
         win.gl_swap_window();
+
+        last_frame = now;
     }
 }

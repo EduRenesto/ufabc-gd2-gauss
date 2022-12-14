@@ -10,7 +10,7 @@
 //! a partir do arquivo `.obj`, chama as funções de cálculo do módulo
 //! [`crate::geom`], e faz a renderização.
 
-use std::f32::consts::PI;
+use std::{f32::consts::PI, time::Duration};
 
 use ultraviolet::Vec3;
 
@@ -32,6 +32,12 @@ pub struct Viewer<'a> {
     /// Matriz que representa a transformação de espaço de objeto -> espaço de
     /// tela para a projeção
     cam_matrix: ultraviolet::Mat4,
+
+    /// Matriz que representa a transformação ortogonal do modelo
+    model_matrix: ultraviolet::Mat4,
+
+    /// Ângulo de rotação do modelo
+    rot: f32,
 }
 
 impl<'a> Viewer<'a> {
@@ -48,7 +54,7 @@ impl<'a> Viewer<'a> {
         load_opts.single_index = false;
 
         let (models, _) = tobj::load_obj(
-            "res/models/torus.obj",
+            "res/models/suzanne.obj",
             &load_opts,
         ).expect("failed to load model");
 
@@ -186,13 +192,28 @@ impl<'a> Viewer<'a> {
             shader,
             vao,
             cam_matrix,
+            model_matrix: ultraviolet::Mat4::identity(),
+            rot: 0.0,
         }
+    }
+
+    pub fn update(&mut self, delta: Duration) {
+        let speed = 0.3; // 0.1 rad/s
+
+        self.rot += speed * delta.as_secs_f32();
+
+        self.model_matrix = ultraviolet::Mat4::from_euler_angles(
+            0.0,
+            self.rot,
+            0.0,
+        );
     }
 
     /// Renderiza a cena.
     pub fn render(&self) {
         self.shader.bind(self.gl);
         self.shader.uniform(self.gl, "_camera_mtx", &self.cam_matrix);
+        self.shader.uniform(self.gl, "_model_mtx", &self.model_matrix);
 
         self.vao.draw(self.gl);
     }
