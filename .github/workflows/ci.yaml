@@ -22,7 +22,7 @@ jobs:
           wget https://github.com/libsdl-org/SDL/releases/download/release-2.26.1/SDL2-devel-2.26.1-mingw.tar.gz
           tar -xvf SDL2-devel-2.26.1-mingw.tar.gz
           pushd SDL2-2.26.1
-          sudo make install-package arch=w86_64-w64-mingw32 prefix=/usr/local
+          sudo make install-package arch=x86_64-w64-mingw32 prefix=/usr/local
           popd
           popd
 
