@@ -1,3 +1,12 @@
+//! # Vertex Buffer
+//!
+//! Esse módulo contém abstrações para os Vertex Array Objects, que
+//! são estruturas que descrevem para a placa de vídeo quais são os
+//! dados a serem renderizados.
+//!
+//! Esse módulo não contém nada de especial, e só serve como utilidade
+//! para remover o boilerplate do código principal do projeto.
+
 use core::slice;
 
 use glow::{Context, HasContext};

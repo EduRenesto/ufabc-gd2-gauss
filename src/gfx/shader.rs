@@ -1,3 +1,11 @@
+//! # Shader
+//!
+//! Um shader é um programa que é executado na GPU, e determina
+//! as posições que a GPU deve desenhar, e como pintar cada pixel.
+//!
+//! Esse módulo não contém nada de especial, e só serve como utilidade
+//! para remover o boilerplate do código principal do projeto.
+
 use glow::{Context, HasContext};
 
 pub struct Shader {
