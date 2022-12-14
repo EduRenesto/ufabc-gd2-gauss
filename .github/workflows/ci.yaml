@@ -56,14 +56,55 @@ jobs:
           cp -r target/x86_64-unknown-linux-gnu/release/gauss /tmp/release-linux/gauss
           cp -r res /tmp/release-linux/res
 
-      - name: Sobe release Windows
+      - name: Empacota release Windows
         uses: actions/upload-artifact@v3
         with:
           name: gauss-win64.zip
           path: /tmp/release-windows
 
-      - name: Sobe release Linux
+      - name: Empacota release Linux
         uses: actions/upload-artifact@v3
         with:
           name: gauss-linux64.zip
           path: /tmp/release-linux
+
+      - name: Cria release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Prepara release Windows
+        uses: actions/download-artifact@v3
+        with:
+          name: gauss-win64.zip
+
+      - name: Prepara release Linux
+        uses: actions/download-artifact@v3
+        with:
+          name: gauss-linux.zip
+
+      - name: Sobe release Windows
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: gauss-win64.zip
+          asset_name: gauss-win64.zip
+          asset_content_type: application/gzip
+
+      - name: Sobe release Linux
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: gauss-linux64.zip
+          asset_name: gauss-linux64.zip
+          asset_content_type: application/gzip
