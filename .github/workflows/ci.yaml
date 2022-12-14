@@ -34,3 +34,26 @@ jobs:
       - name: Compila release Windows
         run: |
           cargo build --release --target x86_64-pc-windows-gnu
+
+      - name: Compila release Linux
+        run: |
+          cargo build --release --target x86_64-unknown-linux-gnu
+
+      - name: Empacota release Windows
+        run: |
+          mkdir /tmp/release-windows
+          cp -r target/x86_64-pc-windows-gnu/release/gauss.exe /tmp/release-windows/gauss.exe
+          cp -r /tmp/sdl2/src/SDL2-2.26.1/x86_64-w64-mingw32/bin/SDL2.dll /tmp/release-windows/SDL2.dll
+          zip -r gauss-win64.zip /tmp/release-windows/*
+
+      - name: Sobe release Windows
+        uses: actions/upload-artifact@v3
+        with:
+          name: gauss-win64.zip
+          path: gauss-win64.zip
+
+      - name: Sobe release Linux
+        uses: actions/upload-artifact@v3
+        with:
+          name: gauss.linux-x86_64
+          path: target/release/gauss
