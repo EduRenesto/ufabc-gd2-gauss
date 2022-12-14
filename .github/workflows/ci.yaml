@@ -23,5 +23,5 @@ jobs:
 
       - name: Compila release Windows
         run: |
-          cd gauss
+          cd ufabc-gd2-gauss
           cargo build --release --target x64_64-pc-windows-gnu
