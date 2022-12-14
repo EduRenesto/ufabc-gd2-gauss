@@ -87,7 +87,7 @@ jobs:
       - name: Prepara release Linux
         uses: actions/download-artifact@v3
         with:
-          name: gauss-linux.zip
+          name: gauss-linux64.zip
 
       - name: Sobe release Windows
         uses: actions/upload-release-asset@v1
