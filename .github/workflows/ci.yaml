@@ -49,24 +49,18 @@ jobs:
           cp -r target/x86_64-pc-windows-gnu/release/gauss.exe /tmp/release-windows/gauss.exe
           cp -r /tmp/sdl2/src/SDL2-2.26.1/x86_64-w64-mingw32/bin/SDL2.dll /tmp/release-windows/SDL2.dll
           cp -r res /tmp/release-windows/res
+          pushd /tmp/release-windows
+          zip -r gauss-win64.zip *
+          popd
 
       - name: Empacota release Linux
         run: |
           mkdir /tmp/release-linux
           cp -r target/x86_64-unknown-linux-gnu/release/gauss /tmp/release-linux/gauss
           cp -r res /tmp/release-linux/res
-
-      - name: Empacota release Windows
-        uses: actions/upload-artifact@v3
-        with:
-          name: gauss-win64.zip
-          path: /tmp/release-windows
-
-      - name: Empacota release Linux
-        uses: actions/upload-artifact@v3
-        with:
-          name: gauss-linux64.zip
-          path: /tmp/release-linux
+          pushd /tmp/release-linux
+          zip -r gauss-linux64.zip *
+          popd
 
       - name: Cria release
         id: create_release
@@ -79,23 +73,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
-      - name: Prepara release Windows
-        uses: actions/download-artifact@v3
-        with:
-          name: gauss-win64.zip
-
-      - name: Prepara release Linux
-        uses: actions/download-artifact@v3
-        with:
-          name: gauss-linux64.zip
-
       - name: Sobe release Windows
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: gauss-win64.zip
+          asset_path: /tmp/release-windows/gauss-win64.zip
           asset_name: gauss-win64.zip
           asset_content_type: application/gzip
 
@@ -105,6 +89,6 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: gauss-linux64.zip
+          asset_path: /tmp/release-linux/gauss-linux64.zip
           asset_name: gauss-linux64.zip
           asset_content_type: application/gzip
