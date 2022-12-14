@@ -1,4 +1,4 @@
-#version 450 core
+#version 410 core
 
 in vec3 out_position;
 in vec3 out_normal;

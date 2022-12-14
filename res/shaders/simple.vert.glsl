@@ -1,4 +1,4 @@
-#version 430 core
+#version 410 core
 
 /*
  * This shader is only used to render the fullscren quad itself.
